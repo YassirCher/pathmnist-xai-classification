@@ -71,7 +71,7 @@ Our ResNet-18 implementation outperforms the official PathMNIST benchmark:
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/YassirCher/pathmnist-xai-classification>
    cd "pathmnist XAI"
    ```
 
