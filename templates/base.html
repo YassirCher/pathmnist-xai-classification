@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PathMNIST XAI Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <i class="bi bi-puzzle-fill me-2 fs-4"></i>
+        <span class="fw-bold">PathMNIST XAI</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#overview">Overview</a></li>
+          <li class="nav-item"><a class="nav-link" href="#performance">Performance</a></li>
+          <li class="nav-item"><a class="nav-link" href="#demo">Live Demo</a></li>
+          <li class="nav-item"><a class="nav-link" href="#model-card">Model Card</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer mt-auto py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <h5 class="fw-bold mb-3">
+            <i class="bi bi-puzzle-fill me-2"></i>PathMNIST XAI
+          </h5>
+          <p class="text-muted mb-3">
+            Explainable AI for medical image classification. This project demonstrates 
+            interpretable deep learning for histopathology image analysis.
+          </p>
+          <div class="d-flex gap-3">
+            <a class="text-decoration-none d-flex align-items-center" href="https://github.com/YassirCher" target="_blank">
+              <i class="bi bi-github fs-5 me-2"></i>
+              <span>GitHub</span>
+            </a>
+            <a class="text-decoration-none d-flex align-items-center" href="https://www.linkedin.com/in/yassir-chergui-051331369/" target="_blank">
+              <i class="bi bi-linkedin fs-5 me-2"></i>
+              <span>LinkedIn</span>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h6 class="fw-bold mb-3">Quick Links</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <a href="#overview" class="text-decoration-none text-muted d-flex align-items-center">
+                <i class="bi bi-chevron-right me-2"></i>Overview
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="#performance" class="text-decoration-none text-muted d-flex align-items-center">
+                <i class="bi bi-chevron-right me-2"></i>Performance
+              </a>
+            </li>
+            <li class="mb-2">
+              <a href="#demo" class="text-decoration-none text-muted d-flex align-items-center">
+                <i class="bi bi-chevron-right me-2"></i>Live Demo
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h6 class="fw-bold mb-3">Important Notice</h6>
+          <div class="alert alert-warning border-0 p-3 mb-0" style="background: rgba(245, 158, 11, 0.1);">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Research Purposes Only</strong>
+            <p class="small mb-0 mt-1">
+              This tool is for educational and research purposes. 
+              Not intended for clinical diagnosis or medical use.
+            </p>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
+      <div class="text-center">
+        <small class="text-muted">
+          © 2025 PathMNIST XAI Dashboard. Built with ResNet-18 & Explainable AI.
+        </small>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script> AOS.init({ duration: 700, once: true, offset: 100 }); </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <!-- Chart guard utility (ensures visible diagnostics if something's off) -->
+  <script>
+    window.safeMakeBarChart = function(canvas, labels, dataArr) {
+      const warn = document.getElementById('perClassWarn');
+      const problems = [];
+      if (!canvas) problems.push('Missing canvas.');
+      if (typeof Chart === 'undefined') problems.push('Chart.js not loaded.');
+      if (!Array.isArray(labels) || labels.length === 0) problems.push('Missing class_names array.');
+      if (!Array.isArray(dataArr) || dataArr.length === 0) problems.push('Missing per_class_acc array.');
+      if (Array.isArray(labels) && Array.isArray(dataArr) && labels.length !== dataArr.length) {
+        problems.push('Length mismatch: labels=' + labels.length + ', data=' + dataArr.length + '.');
+      }
+      if (problems.length) {
+        if (warn) { warn.className = 'alert alert-warning mt-3'; warn.textContent = 'Per-Class chart not rendered: ' + problems.join(' '); }
+        return null;
+      }
+      return new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Accuracy (%)',
+            data: dataArr,
+            backgroundColor: 'rgba(54, 162, 235, 0.75)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          animation: { duration: 600 },
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }
+        }
+      });
+    };
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

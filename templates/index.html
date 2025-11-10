@@ -1,0 +1,479 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section id="overview" class="hero-section py-5 text-white">
+  <div class="container">
+    <div class="row align-items-center g-4 py-4">
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="mb-3">
+          <span class="badge bg-light text-primary px-3 py-2 mb-3">
+            <i class="bi bi-stars me-1"></i>Explainable AI
+          </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-4 animate-fade-in-up">Explainable PathMNIST Classifier</h1>
+        <p class="lead mb-4 opacity-90" style="font-size: 1.15rem;">
+          State-of-the-art deep learning model for 9-class colorectal histopathology image classification with 
+          <strong>Grad-CAM</strong> and <strong>Integrated Gradients</strong> explanations.
+        </p>
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-patch-check-fill fs-5 me-2"></i>
+            <span class="fw-semibold">{{ metrics.test_accuracy }}% Accuracy</span>
+          </div>
+          <div class="d-flex align-items-center">
+            <i class="bi bi-lightning-charge-fill fs-5 me-2"></i>
+            <span class="fw-semibold">Real-time Inference</span>
+          </div>
+        </div>
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="#demo" class="btn btn-light btn-lg px-4 shadow">
+            <i class="bi bi-upload me-2"></i>Try Live Demo
+          </a>
+          <a href="#performance" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-graph-up me-2"></i>View Performance
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5" data-aos="fade-left">
+        <div class="card shadow-lg border-0 glass-card">
+          <div class="card-body p-4">
+            <h5 class="card-title text-dark mb-4 fw-bold">
+              <i class="bi bi-info-circle-fill me-2 text-primary"></i>Model Overview
+            </h5>
+            <ul class="list-unstyled text-dark mb-0">
+              <li class="mb-3 d-flex align-items-start">
+                <i class="bi bi-database-fill text-primary me-3 mt-1 fs-5"></i>
+                <div>
+                  <div class="fw-semibold">PathMNIST Dataset</div>
+                  <small class="text-muted">107,180 histopathology images</small>
+                </div>
+              </li>
+              <li class="mb-3 d-flex align-items-start">
+                <i class="bi bi-grid-3x3-gap-fill text-success me-3 mt-1 fs-5"></i>
+                <div>
+                  <div class="fw-semibold">9 Tissue Classes</div>
+                  <small class="text-muted">Colorectal tissue types</small>
+                </div>
+              </li>
+              <li class="mb-3 d-flex align-items-start">
+                <i class="bi bi-cpu-fill text-info me-3 mt-1 fs-5"></i>
+                <div>
+                  <div class="fw-semibold">ResNet-18 Architecture</div>
+                  <small class="text-muted">Pre-trained backbone</small>
+                </div>
+              </li>
+              <li class="mb-0 d-flex align-items-start">
+                <i class="bi bi-eye-fill text-warning me-3 mt-1 fs-5"></i>
+                <div>
+                  <div class="fw-semibold">XAI Methods</div>
+                  <small class="text-muted">Grad-CAM & Integrated Gradients</small>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="performance" class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="fw-bold mb-2">
+        <i class="bi bi-graph-up-arrow me-2"></i>Model Performance
+      </h2>
+      <p class="text-muted">Comprehensive evaluation metrics on the PathMNIST test set</p>
+    </div>
+
+    <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="100">
+      <div class="col-md-4">
+        <div class="card metric-card h-100 shadow-sm border-0">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-bullseye fs-1 text-primary mb-3 d-block"></i>
+            <h3 class="display-4 fw-bold text-primary mb-2">{{ metrics.test_accuracy }}%</h3>
+            <p class="text-muted mb-0 fw-semibold">Test Accuracy</p>
+            <small class="text-muted d-block mt-2">Overall classification accuracy</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card metric-card h-100 shadow-sm border-0">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-bar-chart-fill fs-1 text-success mb-3 d-block"></i>
+            <h3 class="display-4 fw-bold text-success mb-2">{{ metrics.balanced_accuracy }}%</h3>
+            <p class="text-muted mb-0 fw-semibold">Balanced Accuracy</p>
+            <small class="text-muted d-block mt-2">Adjusted for class imbalance</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card metric-card h-100 shadow-sm border-0">
+          <div class="card-body text-center p-4">
+            <i class="bi bi-stack fs-1 text-info mb-3 d-block"></i>
+            <h3 class="display-4 fw-bold text-info mb-2">9</h3>
+            <p class="text-muted mb-0 fw-semibold">Tissue Classes</p>
+            <small class="text-muted d-block mt-2">Colorectal tissue types</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0" data-aos="fade-up" data-aos-delay="200">
+      <div class="card-body p-4">
+        <h5 class="card-title mb-4 fw-bold">
+          <i class="bi bi-bar-chart-line me-2 text-primary"></i>Per-Class Accuracy Breakdown
+        </h5>
+        <canvas id="perClassChart" height="80"></canvas>
+        <div id="perClassWarn" class="d-none"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="fw-bold mb-2">
+        <i class="bi bi-cpu me-2"></i>Live Prediction Demo
+      </h2>
+      <p class="text-muted">Upload a histopathology image to see real-time classification and explanations</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-5" data-aos="fade-right">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body p-4 d-flex flex-column">
+            <h5 class="card-title mb-4 fw-bold">
+              <i class="bi bi-cloud-upload me-2 text-primary"></i>Upload Image
+            </h5>
+            <form id="upload-form" action="/predict" method="post" enctype="multipart/form-data" class="needs-validation flex-grow-1 d-flex flex-column" novalidate>
+              <div class="mb-4">
+                <label class="form-label">Select PathMNIST image (PNG/JPG)</label>
+                <input class="form-control form-control-lg" type="file" name="image" id="imageInput" accept="image/*" required>
+                <div class="form-text mt-2">
+                  <i class="bi bi-info-circle me-1"></i>Supported formats: PNG, JPG, JPEG
+                </div>
+              </div>
+              
+              <div id="preview" class="mb-4 text-center d-none flex-grow-1 d-flex align-items-center justify-content-center">
+                <div class="image-frame">
+                  <img id="previewImage" class="img-fluid rounded shadow-sm preview-img" alt="preview">
+                </div>
+              </div>
+              
+              <!-- Spacer for when no image is selected -->
+              <div id="upload-spacer" class="flex-grow-1 d-flex align-items-center justify-content-center text-muted">
+                <div class="text-center py-4">
+                  <i class="bi bi-cloud-upload fs-1 text-primary mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
+                  <p class="mb-0 small">Drag and drop an image here, or click "Choose File"</p>
+                  <small class="text-muted">28x28 histopathology patches preferred</small>
+                </div>
+              </div>
+              
+              <div class="mt-auto">
+                <div class="d-grid">
+                  <button class="btn btn-primary btn-lg shadow" type="submit">
+                    <i class="bi bi-play-circle me-2"></i>Predict & Explain
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7" data-aos="fade-left">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-body p-4">
+            <h5 class="card-title mb-4 fw-bold">
+              <i class="bi bi-diagram-3 me-2 text-success"></i>Predictions & Explanations
+            </h5>
+            
+            <!-- Default empty state -->
+            <div id="empty-state" class="text-center text-muted py-5">
+              <div class="mb-4">
+                <i class="bi bi-image fs-1 d-block mb-3 text-primary" style="font-size: 4rem;"></i>
+                <h6 class="fw-semibold mb-2">No Image Selected</h6>
+                <p class="mb-0">Upload a histopathology image to see predictions and AI explanations</p>
+              </div>
+              <div class="row g-3 text-start mt-4">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-lightning-charge-fill text-warning fs-5 me-2 mt-1"></i>
+                    <div>
+                      <small class="fw-semibold d-block">Fast Inference</small>
+                      <small class="text-muted">Real-time predictions</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-eye-fill text-info fs-5 me-2 mt-1"></i>
+                    <div>
+                      <small class="fw-semibold d-block">Visual Explanations</small>
+                      <small class="text-muted">Grad-CAM & IG heatmaps</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-graph-up text-success fs-5 me-2 mt-1"></i>
+                    <div>
+                      <small class="fw-semibold d-block">Confidence Scores</small>
+                      <small class="text-muted">All 9 class probabilities</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-shield-check text-primary fs-5 me-2 mt-1"></i>
+                    <div>
+                      <small class="fw-semibold d-block">Interpretable AI</small>
+                      <small class="text-muted">Understand model decisions</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image preview state -->
+            <div id="preview-state" class="text-center d-none">
+              <div class="mb-4">
+                <div class="image-frame d-inline-block mb-3">
+                  <img id="preview-display" class="rounded shadow-sm" style="max-width: 200px; max-height: 200px; object-fit: contain;" alt="Selected image">
+                </div>
+                <h6 class="fw-semibold text-success mb-2">
+                  <i class="bi bi-check-circle-fill me-2"></i>Image Ready
+                </h6>
+                <p class="text-muted mb-0">Click "Predict & Explain" to analyze this image</p>
+              </div>
+              <div class="row g-3 text-start">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-cpu text-success fs-5 me-2 mt-1"></i>
+                    <div>
+                      <small class="fw-semibold d-block">Ready for Analysis</small>
+                      <small class="text-muted">ResNet-18 model loaded</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-magic text-info fs-5 me-2 mt-1"></i>
+                    <div>
+                      <small class="fw-semibold d-block">XAI Methods</small>
+                      <small class="text-muted">Grad-CAM & IG ready</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="disease-info" class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="fw-bold mb-2">
+        <i class="bi bi-book-medical me-2"></i>Tissue Type Information
+      </h2>
+      <p class="text-muted">Understanding the 9 colorectal tissue classes in PathMNIST</p>
+    </div>
+    
+    <div class="row g-4">
+      <!-- Benign/Normal Tissues -->
+      <div class="col-lg-6" data-aos="fade-right">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-header bg-success bg-opacity-10 border-0">
+            <h5 class="mb-0 fw-bold text-success">
+              <i class="bi bi-shield-check-fill me-2"></i>Benign/Normal Tissues
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-success mb-2">ADI - Adipose</h6>
+                  <p class="small text-muted mb-2">Normal fat tissue surrounding organs</p>
+                  <span class="badge bg-success bg-opacity-20 text-success">Benign</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-success mb-2">NORM - Normal Mucosa</h6>
+                  <p class="small text-muted mb-2">Healthy colon lining tissue</p>
+                  <span class="badge bg-success bg-opacity-20 text-success">Benign</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-success mb-2">MUS - Smooth Muscle</h6>
+                  <p class="small text-muted mb-2">Normal muscle tissue in colon wall</p>
+                  <span class="badge bg-success bg-opacity-20 text-success">Benign</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-muted mb-2">BACK - Background</h6>
+                  <p class="small text-muted mb-2">Empty background areas</p>
+                  <span class="badge bg-secondary bg-opacity-20 text-secondary">Normal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suspicious/Malignant Tissues -->
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="card shadow-sm border-0 h-100">
+          <div class="card-header bg-warning bg-opacity-10 border-0">
+            <h5 class="mb-0 fw-bold text-warning">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>Suspicious/Malignant Tissues
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-danger mb-2">TUM - Tumor</h6>
+                  <p class="small text-muted mb-2">Colorectal adenocarcinoma epithelium</p>
+                  <span class="badge bg-danger bg-opacity-20 text-danger">High Risk</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-danger mb-2">STR - Stroma</h6>
+                  <p class="small text-muted mb-2">Cancer-associated supportive tissue</p>
+                  <span class="badge bg-danger bg-opacity-20 text-danger">High Risk</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-warning mb-2">DEB - Debris</h6>
+                  <p class="small text-muted mb-2">Tissue breakdown products</p>
+                  <span class="badge bg-warning bg-opacity-20 text-warning">Monitor</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-info mb-2">MUC - Mucus</h6>
+                  <p class="small text-muted mb-2">Secretions, may indicate changes</p>
+                  <span class="badge bg-info bg-opacity-20 text-info">Variable</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tissue-item">
+                  <h6 class="fw-bold text-warning mb-2">LYM - Lymphocytes</h6>
+                  <p class="small text-muted mb-2">Immune cells, can indicate inflammation</p>
+                  <span class="badge bg-warning bg-opacity-20 text-warning">Monitor</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="alert alert-warning border-0 shadow-sm position-relative" role="alert">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-exclamation-triangle-fill text-warning me-3 mt-1 fs-5"></i>
+            <div class="flex-grow-1 pe-4">
+              <h6 class="fw-bold text-warning mb-2">Important Medical Disclaimer</h6>
+              <p class="mb-0 small text-dark">
+                This AI tool is for research and educational purposes only. Results should never be used for clinical diagnosis 
+                or treatment decisions without consultation with qualified medical professionals. Always seek professional medical 
+                advice for any health-related concerns.
+              </p>
+            </div>
+          </div>
+          <button type="button" class="btn-close position-absolute top-0 end-0 mt-3 me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    // Ensure Chart.js loaded (base.html includes it before this block)
+    const canvas = document.getElementById('perClassChart');
+    const warnBox = document.getElementById('perClassWarn');
+    if (!canvas) return;
+
+    // Read template data safely
+    const labels = {{ class_names | tojson | safe }};
+    const dataArr = {{ metrics.per_class_acc | tojson | safe }};
+
+    const problems = [];
+    if (!Array.isArray(labels) || labels.length === 0) problems.push('Missing class_names array.');
+    if (!Array.isArray(dataArr) || dataArr.length === 0) problems.push('Missing per_class_acc array.');
+    if (Array.isArray(labels) && Array.isArray(dataArr) && labels.length !== dataArr.length) {
+      problems.push(`Length mismatch: labels=${labels.length}, data=${dataArr.length}.`);
+    }
+    if (typeof Chart === 'undefined') {
+      problems.push('Chart.js did not load.');
+    }
+
+    if (problems.length) {
+      warnBox.className = 'alert alert-warning mt-3';
+      warnBox.textContent = 'Per-Class chart not rendered: ' + problems.join(' ');
+      return;
+    }
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Accuracy (%)',
+          data: dataArr,
+          backgroundColor: 'rgba(54, 162, 235, 0.75)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 2,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: { duration: 600 },
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { callback: (v) => v + '%' }
+          }
+        }
+      }
+    });
+  })();
+
+  // Live preview
+  const fileInput = document.getElementById('imageInput');
+  const previewWrap = document.getElementById('preview');
+  const previewImg = document.getElementById('previewImage');
+  if (fileInput && previewWrap && previewImg) {
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) { previewWrap.classList.add('d-none'); previewImg.removeAttribute('src'); return; }
+      const reader = new FileReader();
+      reader.onload = (ev) => { previewImg.src = ev.target.result; previewWrap.classList.remove('d-none'); };
+      reader.readAsDataURL(file);
+    });
+  }
+</script>
+{% endblock %}

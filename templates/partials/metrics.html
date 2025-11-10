@@ -1,0 +1,73 @@
+<div class="animate__animated animate__fadeIn">
+  <h6 class="mb-3 fw-bold">
+    <i class="bi bi-graph-up-arrow me-2"></i>Evaluation Metrics
+  </h6>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body text-center">
+          <h3 class="display-6 text-primary mb-1">{{ metrics.test_accuracy }}%</h3>
+          <p class="text-muted mb-0">Test Accuracy</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body text-center">
+          <h3 class="display-6 text-success mb-1">{{ metrics.balanced_accuracy }}%</h3>
+          <p class="text-muted mb-0">Balanced Accuracy</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body text-center">
+          <h3 class="display-6 text-info mb-1">{{ metrics.macro_f1 or '—' }}</h3>
+          <p class="text-muted mb-0">Macro F1</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h6 class="mb-3">Per‑Class Accuracy</h6>
+      <canvas id="perClassChartModal" height="80"></canvas>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const ctx = document.getElementById('perClassChartModal');
+      if (!ctx) return;
+      const labels = {{ class_labels | tojson }};
+      const data = {{ metrics.per_class_acc | tojson }};
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Per‑Class Accuracy (%)',
+            data,
+            backgroundColor: 'rgba(54,162,235,0.7)',
+            borderColor: 'rgba(54,162,235,1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: {
+              beginAtZero: true, max: 100,
+              ticks: { callback: v => v + '%' }
+            }
+          }
+        }
+      });
+    })();
+  </script>
+</div>

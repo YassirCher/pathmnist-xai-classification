@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="mb-4" data-aos="fade-down">
+      <h2 class="mb-2 fw-bold">
+        <i class="bi bi-clipboard2-check me-2 text-primary"></i>Prediction Results
+      </h2>
+      <p class="text-muted">Detailed classification results with confidence scores and visual explanations</p>
+    </div>
+
+    <!-- Top Prediction Highlight -->
+    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up">
+      <div class="card-body p-4">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h5 class="mb-3 fw-bold">
+              <i class="bi bi-trophy-fill text-warning me-2"></i>Top Prediction
+            </h5>
+            <div class="d-flex align-items-center gap-3">
+              <div>
+                <h3 class="mb-1 fw-bold text-primary">{{ top_prediction.class_name }}</h3>
+                <p class="text-muted mb-0">{{ top_prediction.class_full }}</p>
+              </div>
+              <div class="ms-auto">
+                <div class="text-end">
+                  <h2 class="mb-0 fw-bold text-success">{{ (top_prediction.probability * 100) | round(1) }}%</h2>
+                  <small class="text-muted">Confidence</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="image-frame d-inline-block mt-3 mt-md-0">
+              <img src="{{ url_for('static', filename='uploads/temp.png') }}?v={{ range(1,999999)|random }}"
+                   class="rounded shadow-sm" style="width:120px; height:120px; object-fit:contain;" alt="uploaded">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medical Risk Assessment -->
+    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="50">
+      <div class="card-body p-4">
+        <h6 class="mb-3 fw-bold">
+          <i class="bi bi-shield-exclamation me-2 text-warning"></i>Risk Assessment
+        </h6>
+        <div class="row">
+          <div class="col-md-8">
+            {% set risk_levels = {
+              'TUM': 'high',
+              'STR': 'medium', 
+              'MUC': 'medium',
+              'DEB': 'low',
+              'LYM': 'low',
+              'MUS': 'low',
+              'NORM': 'none',
+              'ADI': 'none',
+              'BACK': 'none'
+            } %}
+            {% set risk_colors = {
+              'high': 'danger',
+              'medium': 'warning', 
+              'low': 'info',
+              'none': 'success'
+            } %}
+            {% set risk_descriptions = {
+              'high': 'Malignant tissue detected - requires immediate medical attention',
+              'medium': 'Suspicious tissue patterns - medical consultation recommended',
+              'low': 'Inflammatory/immune response - monitoring may be needed',
+              'none': 'Normal or benign tissue patterns - routine follow-up'
+            } %}
+            
+            {% set top_risk = risk_levels[top_prediction.class_name] %}
+            {% set risk_color = risk_colors[top_risk] %}
+            {% set risk_desc = risk_descriptions[top_risk] %}
+            
+            <div class="d-flex align-items-center gap-3 mb-3">
+              {% if top_risk == 'high' %}
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-3"></i>
+              {% elif top_risk == 'medium' %}
+                <i class="bi bi-exclamation-circle-fill text-warning fs-3"></i>
+              {% elif top_risk == 'low' %}
+                <i class="bi bi-info-circle-fill text-info fs-3"></i>
+              {% else %}
+                <i class="bi bi-check-circle-fill text-success fs-3"></i>
+              {% endif %}
+              
+              <div>
+                <div class="fw-bold text-{{ risk_color }}">
+                  {% if top_risk == 'high' %}HIGH PRIORITY
+                  {% elif top_risk == 'medium' %}MODERATE PRIORITY
+                  {% elif top_risk == 'low' %}LOW PRIORITY
+                  {% else %}ROUTINE
+                  {% endif %}
+                </div>
+                <div class="text-muted">{{ risk_desc }}</div>
+              </div>
+            </div>
+            
+            <div class="alert alert-{{ risk_color }} border-0 shadow-sm position-relative mb-0" role="alert">
+              <div class="d-flex align-items-start">
+                <i class="bi bi-info-circle-fill me-3 mt-1 fs-5"></i>
+                <div class="flex-grow-1 pe-4">
+                  <strong>Medical Disclaimer:</strong> This AI system is for research and educational purposes only. 
+                  Always consult qualified healthcare professionals for medical diagnosis and treatment decisions.
+                  {% if top_risk == 'high' %}
+                    <br><strong>Urgent:</strong> High-priority findings require immediate pathologist review.
+                  {% endif %}
+                </div>
+              </div>
+              <button type="button" class="btn-close position-absolute top-0 end-0 mt-3 me-3" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <div class="text-center">
+              <h5 class="mb-2">Confidence Level</h5>
+              <div class="position-relative d-inline-block">
+                <svg width="100" height="100" class="circular-progress">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#e9ecef" stroke-width="8"/>
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#{% if top_risk == 'high' %}dc3545{% elif top_risk == 'medium' %}ffc107{% elif top_risk == 'low' %}0dcaf0{% else %}198754{% endif %}" 
+                          stroke-width="8" stroke-linecap="round"
+                          stroke-dasharray="{{ (top_prediction.probability * 283) | round(0) }} 283"
+                          transform="rotate(-90 50 50)"/>
+                </svg>
+                <div class="position-absolute top-50 start-50 translate-middle text-center">
+                  <div class="fw-bold fs-6">{{ (top_prediction.probability * 100) | round(1) }}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Class Probabilities -->
+    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="100">
+      <div class="card-body p-4">
+        <h6 class="mb-3 fw-bold">
+          <i class="bi bi-bar-chart-fill me-2 text-info"></i>All Class Probabilities
+        </h6>
+        <div class="scrolling-wrapper d-flex flex-row flex-nowrap gap-3 py-2">
+          {% for pred in predictions %}
+          <div class="card small-predict-card border-0 h-100 flex-shrink-0 {% if loop.index0 == selected_class|default(pred.class_idx) %}border-primary{% endif %}" 
+               style="{% if loop.index0 == selected_class|default(pred.class_idx) %}border: 2px solid #667eea !important;{% endif %}">
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge {% if loop.index0 == selected_class|default(pred.class_idx) %}bg-primary{% else %}bg-secondary{% endif %} px-2 py-1">
+                  #{{ loop.index }}
+                </span>
+                <strong class="fs-6">{{ (pred.probability * 100) | round(1) }}%</strong>
+              </div>
+              <div class="fw-bold mb-1">{{ pred.class_name }}</div>
+              <div class="text-muted small mb-2" style="font-size: 0.8rem;">{{ pred.class_full }}</div>
+              <div class="progress" style="height:8px;">
+                <div class="progress-bar {% if loop.index0 == selected_class|default(pred.class_idx) %}bg-primary{% else %}bg-secondary{% endif %}" 
+                     style="width: {{ pred.probability * 100 }}%"></div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Explanation Controls -->
+    <div class="card shadow-sm border-0 mb-4" data-aos="fade-up" data-aos-delay="200">
+      <div class="card-body p-4">
+        <h6 class="mb-4 fw-bold">
+          <i class="bi bi-magic me-2 text-success"></i>Generate Explanations
+        </h6>
+        <form action="/explain_page" method="post">
+          <div class="row g-3 align-items-end">
+            <div class="col-md-5">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-bullseye me-1"></i>Target Class
+              </label>
+              <select class="form-select form-select-lg" name="target_class">
+                {% for idx in range(0, 9) %}
+                <option value="{{ idx }}" {% if selected_class is defined and idx == selected_class %}selected{% endif %}>
+                  {{ class_names[idx] }} - {{ (predictions[idx].probability*100)|round(1) }}%
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-eye me-1"></i>XAI Method
+              </label>
+              <select class="form-select form-select-lg" name="method">
+                <option value="gradcam" {% if selected_method == 'gradcam' %}selected{% endif %}>
+                  <i class="bi bi-grid-3x3"></i>Grad-CAM
+                </option>
+                <option value="ig" {% if selected_method == 'ig' %}selected{% endif %}>
+                  <i class="bi bi-layers"></i>Integrated Gradients
+                </option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <div class="d-grid">
+                <button class="btn btn-success btn-lg shadow" type="submit">
+                  <i class="bi bi-stars me-2"></i>Explain
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if overlay_base64 and heatmap_base64 %}
+    <div class="alert alert-info mb-4" data-aos="fade-up" data-aos-delay="300">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+        <div>
+          <strong>Explanation Generated</strong><br>
+          <small>
+            {{ selected_method|upper }} visualization for class <strong>{{ class_names[selected_class] }}</strong>
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="row g-4" data-aos="fade-up" data-aos-delay="400">
+      <div class="col-md-6">
+        <div class="card gallery-card h-100 shadow-sm">
+          <div class="card-header py-3 bg-white">
+            <h6 class="mb-0 fw-bold">
+              <i class="bi bi-layers-fill me-2 text-primary"></i>Overlay
+            </h6>
+          </div>
+          <div class="card-body p-3 d-flex justify-content-center align-items-center bg-light">
+            <div class="image-frame">
+              <img src="{{ overlay_base64 }}" class="gallery-img rounded shadow-sm" alt="Overlay">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card gallery-card h-100 shadow-sm">
+          <div class="card-header py-3 bg-white">
+            <h6 class="mb-0 fw-bold">
+              <i class="bi bi-thermometer-half me-2 text-danger"></i>Heatmap
+            </h6>
+          </div>
+          <div class="card-body p-3 d-flex justify-content-center align-items-center bg-light">
+            <div class="image-frame">
+              <img src="{{ heatmap_base64 }}" class="gallery-img rounded shadow-sm" alt="Heatmap">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="text-center mt-5" data-aos="fade-up">
+      <a href="/" class="btn btn-outline-primary btn-lg px-5">
+        <i class="bi bi-arrow-left me-2"></i>Upload Another Image
+      </a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

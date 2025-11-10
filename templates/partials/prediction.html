@@ -1,0 +1,22 @@
+<div class="animate__animated animate__fadeIn">
+  <h6 class="mb-3 fw-bold"><i class="bi bi-check-circle-fill text-success me-2"></i>Top Predictions</h6>
+  <div class="row g-3 mb-4">
+    {% for pred in predictions %}
+    <div class="col-md-4">
+      <div class="card prediction-card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge bg-{{ 'primary' if loop.first else 'secondary' }}">#{{ loop.index }}</span>
+            <strong class="fs-5">{{ (pred.probability * 100) | round(1) }}%</strong>
+          </div>
+          <h6 class="card-title mb-0">{{ pred.class_name }}</h6>
+          <small class="text-muted">{{ pred.class_full }}</small>
+          <div class="progress mt-2" style="height: 8px;">
+            <div class="progress-bar bg-{{ 'primary' if loop.first else 'secondary' }}" role="progressbar" style="width: {{ pred.probability * 100 }}%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
