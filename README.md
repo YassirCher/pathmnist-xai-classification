@@ -1,4 +1,4 @@
-# 🔬 PathMNIST XAI  Explainable Medical Image Classification
+# 🔬 PathMNIST XAI : Explainable Medical Image Classification
 > **Production-ready Flask web app for histopathology tissue classification with visual AI explanations  achieving 93.13% accuracy and exceeding PathMNIST benchmarks.**
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)]...
