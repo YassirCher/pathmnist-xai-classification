@@ -1,5 +1,7 @@
 # 🔬 PathMNIST XAI — Explainable Medical Image Classification
+> **Production-ready Flask web app for histopathology tissue classification with visual AI explanations — achieving 93.13% accuracy and exceeding PathMNIST benchmarks.**
 
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)]...
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)](https://pytorch.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0%2B-green.svg)](https://flask.palletsprojects.com/)
@@ -55,6 +57,7 @@ Our ResNet-18 implementation outperforms the official PathMNIST benchmark:
 **Overall Metrics:**
 - **Macro Average**: Precision: 0.9031, Recall: 0.9109, F1-Score: 0.9048
 - **Weighted Average**: Precision: 0.9338, Recall: 0.9313, F1-Score: 0.9311
+<img width="1935" height="790" alt="image" src="https://github.com/user-attachments/assets/70037e28-c640-420b-abfe-dd08ab8e725c" />
 
 ---
 
@@ -202,39 +205,52 @@ pathmnist XAI/
 ## 📸 Screenshots
 
 ### Landing Page & Demo Interface
-*Add screenshot here: `docs/screenshots/landing-page.png`*
 - Hero section with project overview
+ <img width="1274" height="682" alt="image" src="https://github.com/user-attachments/assets/ae38d608-050d-4105-a437-ae78a80ba824" />
 - Performance metrics visualization
+  <img width="1267" height="686" alt="image" src="https://github.com/user-attachments/assets/66163873-08ff-480f-a6ff-2c8648c972cb" />
+
 - Interactive demo with image upload
+  <img width="1268" height="688" alt="image" src="https://github.com/user-attachments/assets/2c35fc52-5c32-45f3-a915-13d7f5d1bcc7" />
+- footer
+- <img width="1271" height="681" alt="image" src="https://github.com/user-attachments/assets/cf523cb0-2441-476e-ac69-ce107fbc6444" />
 
 ### Prediction Results
-*Add screenshot here: `docs/screenshots/prediction-results.png`*
+<img width="1268" height="662" alt="image" src="https://github.com/user-attachments/assets/680bfc48-b930-42c8-92d6-571af675bc1e" />
+
 - Top prediction with confidence score
-- All 9 class probabilities with progress bars
-- Risk assessment with medical disclaimers
+  <img width="1268" height="686" alt="image" src="https://github.com/user-attachments/assets/1abc8d1f-5a6d-4974-9281-a60eabf1d8c0" />
+
+- All 9 class probabilities with progress bars & Risk assessment with medical disclaimers
+  <img width="1267" height="685" alt="image" src="https://github.com/user-attachments/assets/dd1770a3-35ee-487c-a36e-0c1b567868d1" />
+
 
 ### XAI Explanations - Grad-CAM
-*Add screenshot here: `docs/screenshots/gradcam-explanation.png`*
+<img width="1269" height="683" alt="image" src="https://github.com/user-attachments/assets/f4aa5834-d08e-4179-843a-93d7e95bcc42" />
+
 - Heatmap overlay showing spatial attention
 - Original image comparison
 - Class-specific activation visualization
 
 ### XAI Explanations - Integrated Gradients
-*Add screenshot here: `docs/screenshots/integrated-gradients.png`*
+<img width="1267" height="685" alt="image" src="https://github.com/user-attachments/assets/eca80d9d-09f5-45a4-af6e-a8ca69063740" />
+
 - Pixel-level attribution analysis
 - Smooth gradient visualization
 - Feature importance mapping
 
 ### Risk Assessment Dashboard
-*Add screenshot here: `docs/screenshots/risk-assessment.png`*
+<img width="1268" height="686" alt="image" src="https://github.com/user-attachments/assets/99284a4c-530a-446f-88ea-d88ba38781e5" />
+
 - Medical risk level indicators
 - Confidence visualization
 - Clinical guidance and disclaimers
 
 ### Tissue Classification Guide
-*Add screenshot here: `docs/screenshots/tissue-guide.png`*
-- Comprehensive tissue type information
-- Risk classification system
+  <img width="1265" height="685" alt="image" src="https://github.com/user-attachments/assets/7972f34a-b99e-46c1-bedd-6b945c14c3c1" />
+  
+- Comprehensive tissue type information  
+- Risk classification system  
 - Educational medical content
 
 ---
@@ -493,16 +509,6 @@ Notes about dependencies
 - Captum: used for explainability. `pip install captum`.
 - SciPy: required for Gaussian smoothing applied to Integrated Gradients (already used in `utils/xai_methods.py`).
 
-Screenshots (placeholders)
--------------------------
-Add screenshots to `static/images/screenshots/` (create the folder if it doesn't exist). Recommended sizes: 1600×640 for header/full-width screenshots and 800×380 for smaller widgets.
-
-In the README you can add images like this (example Markdown):
-
-```markdown
-![Demo Interface](static/images/screenshots/demo-interface.png)
-![Explanation Overlay](static/images/screenshots/overlay.png)
-```
 
 Troubleshooting and tips
 ------------------------
@@ -517,20 +523,3 @@ Developer notes — XAI implementation details
 - Grad‑CAM: `utils/xai_methods.py` uses Captum `LayerGradCam` and upscales activations to 224×224 with bilinear interpolation to get a smooth heatmap.
 - Integrated Gradients: computed with an increased number of steps to reduce noise; absolute attributions are summed over channels and then Gaussian-filtered before normalization. This helps create smooth saliency maps.
 - Rendering: `to_base64()` renders images using a higher DPI and bilinear interpolation in matplotlib to produce a high-quality PNG that the UI embeds.
-
-Contributing
-------------
-If you want to improve the app:
-
-- Add more XAI methods (e.g. SmoothGrad, Grad‑CAM++), expose additional parameters in the UI.
-- Add server-side caching for explanations to avoid recomputing the same outputs for the same image+target.
-- Extend the evaluation dashboard with confusion matrices and per-class visual examples.
-
-License
--------
-This repository is provided for research and educational use. If you want a license stated here, let me know and I can add an appropriate open-source license (MIT, Apache 2.0, etc.).
-
-Contact
--------
-If you want help packaging this as a Docker container or deploying to a cloud provider, tell me your target environment and I can add a Dockerfile and deployment instructions.
-
